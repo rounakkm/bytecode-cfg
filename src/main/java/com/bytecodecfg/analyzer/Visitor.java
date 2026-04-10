@@ -1,10 +1,5 @@
 package com.bytecodecfg.analyzer;
 
-public class Visitor {
-}
-
-package com.bytecodecfg.analyzer;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
