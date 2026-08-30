@@ -30,7 +30,7 @@ public class Parser {
 
         for (File file : files) {
             if (file.isDirectory()) {
-                units.addAll(parseDirectory(file));  // recurse into subdirectories error 
+                units.addAll(parseDirectory(file));  
             } else if (file.getName().endsWith(".java")) {
                 try {
                     units.add(parseFile(file));

@@ -56,7 +56,7 @@ public class AnalyzerEngine {
             }
         }
 
-        //results
+       
         System.out.println("Analysis complete. Found " + allViolations.size() + " violation(s).\n");
         reporter.report(allViolations);
     }
