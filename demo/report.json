@@ -1,0 +1,34 @@
+Loaded 3 rules.
+Analyzing 1 file(s)...
+
+Analysis complete. Found 5 violation(s).
+
+{
+  "totalViolations" : 5,
+  "violations" : [ {
+    "rule" : "NamingRule",
+    "file" : "Sample.java",
+    "line" : 6,
+    "message" : "Field name 'BadlyNamedField' should use camelCase (e.g. 'badlyNamedField')"
+  }, {
+    "rule" : "NamingRule",
+    "file" : "Sample.java",
+    "line" : 9,
+    "message" : "Constant 'invalidConstant' should use UPPER_SNAKE_CASE (e.g. 'INVALID_CONSTANT')"
+  }, {
+    "rule" : "NamingRule",
+    "file" : "Sample.java",
+    "line" : 17,
+    "message" : "Method name 'BadMethodName' should use camelCase (e.g. 'badMethodName')"
+  }, {
+    "rule" : "ComplexityRule",
+    "file" : "Sample.java",
+    "line" : 29,
+    "message" : "Method 'complexMethod' has complexity of 11, exceeds threshold of 10"
+  }, {
+    "rule" : "NullCheckRule",
+    "file" : "Sample.java",
+    "line" : 24,
+    "message" : "Potential null dereference: 'text.length()' — 'text' was assigned null at line 23"
+  } ]
+}

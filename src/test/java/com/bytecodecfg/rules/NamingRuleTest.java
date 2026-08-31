@@ -32,6 +32,7 @@ public class NamingRuleTest {
     }
 
    
+    @Test
     public void testNamingRuleNoViolation() {
         String code = "public class ValidClass { public void validMethod() {} }";
         CompilationUnit cu = StaticJavaParser.parse(code);
