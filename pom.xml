@@ -89,6 +89,7 @@
                 <version>3.2.5</version>
             </plugin>
 
+            <!-- Standalone executable fat jar for CLI usage -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
