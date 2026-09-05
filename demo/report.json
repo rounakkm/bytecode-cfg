@@ -1,8 +1,3 @@
-Loaded 3 rules.
-Analyzing 1 file(s)...
-
-Analysis complete. Found 5 violation(s).
-
 {
   "totalViolations" : 5,
   "violations" : [ {

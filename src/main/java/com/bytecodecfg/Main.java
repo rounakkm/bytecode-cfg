@@ -1,10 +1,15 @@
 package com.bytecodecfg;
 
 import com.bytecodecfg.analyzer.AnalyzerEngine;
+import com.bytecodecfg.reporter.HtmlReporter;
+import com.bytecodecfg.reporter.JsonReporter;
+import com.bytecodecfg.reporter.Reporter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 
 public class Main {
@@ -15,6 +20,7 @@ public class Main {
     public static void main(String[] args) {
         String inputPath = null;
         String outputPath = null;
+        String format = "json";
 
         
         for (int i = 0; i < args.length; i++) {
@@ -37,6 +43,13 @@ public class Main {
                     System.exit(EXIT_ERROR);
                 }
                 outputPath = args[++i];
+            } else if ("--format".equals(arg)) {
+                if (i + 1 >= args.length) {
+                    System.err.println("Error: Missing value for option " + arg);
+                    printUsage();
+                    System.exit(EXIT_ERROR);
+                }
+                format = args[++i].toLowerCase();
             } else if (arg.startsWith("-")) {
                 System.err.println("Error: Unknown option '" + arg + "'");
                 printUsage();
@@ -64,6 +77,14 @@ public class Main {
             System.exit(EXIT_ERROR);
         }
 
+        if (!"json".equals(format) && !"html".equals(format)) {
+            System.err.println("Error: Unsupported format '" + format + "'. Expected json or html.");
+            printUsage();
+            System.exit(EXIT_ERROR);
+        }
+
+        Reporter reporter = "html".equals(format) ? new HtmlReporter(inputPath) : new JsonReporter();
+
     
         if (outputPath != null) {
             File outputFile = new File(outputPath);
@@ -73,10 +94,14 @@ public class Main {
             }
 
             PrintStream originalOut = System.out;
-            try (PrintStream fileOut = new PrintStream(new FileOutputStream(outputFile))) {
-                System.setOut(fileOut);
-                AnalyzerEngine engine = new AnalyzerEngine(inputPath);
-                engine.run();
+            // The analyzer emits progress messages and the reporter emits the document.
+            // Capture both, then write only the document so report files remain valid.
+            try (ByteArrayOutputStream capturedOut = new ByteArrayOutputStream();
+                 PrintStream captureStream = new PrintStream(capturedOut, true, StandardCharsets.UTF_8);
+                 PrintStream fileOut = new PrintStream(new FileOutputStream(outputFile), true, StandardCharsets.UTF_8)) {
+                System.setOut(captureStream);
+                new AnalyzerEngine(inputPath, reporter).run();
+                fileOut.print(extractReport(capturedOut.toString(StandardCharsets.UTF_8), format));
             } catch (Exception e) {
                 System.err.println("Error: Failed to write report to file " + outputPath + ": " + e.getMessage());
                 System.exit(EXIT_ERROR);
@@ -86,8 +111,7 @@ public class Main {
         } else {
             System.out.println("Starting BytecodeCFG analysis on: " + inputPath);
             try {
-                AnalyzerEngine engine = new AnalyzerEngine(inputPath);
-                engine.run();
+                new AnalyzerEngine(inputPath, reporter).run();
             } catch (Exception e) {
                 System.err.println("Error during analysis: " + e.getMessage());
                 System.exit(EXIT_ERROR);
@@ -97,12 +121,26 @@ public class Main {
         System.exit(EXIT_SUCCESS);
     }
 
+    /**
+     * Removes analyzer progress text from file reports without changing the
+     * established reporter implementations or their stdout contract.
+     */
+    private static String extractReport(String capturedOutput, String format) {
+        String marker = "html".equals(format) ? "<!doctype html>" : "{";
+        int reportStart = capturedOutput.indexOf(marker);
+        if (reportStart < 0) {
+            throw new IllegalStateException("Reporter did not produce " + format + " output.");
+        }
+        return capturedOutput.substring(reportStart);
+    }
+
   
     private static void printUsage() {
-        System.err.println("Usage: java -jar bytecode-cfg-runner.jar --input <path> [--output <path>]");
+        System.err.println("Usage: java -jar bytecode-cfg-runner.jar --input <path> [--output <path>] [--format json|html]");
         System.err.println("Options:");
         System.err.println("  -i, --input <path>   Path to the Java source file or directory to analyze (required)");
-        System.err.println("  -o, --output <path>  Path to save the generated JSON report (optional, default: stdout)");
+        System.err.println("  -o, --output <path>  Path to save the generated report (optional, default: stdout)");
+        System.err.println("      --format <type>  Report format: json (default) or html");
         System.err.println("  -h, --help           Show this help message and exit");
     }
 }

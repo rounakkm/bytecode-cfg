@@ -18,9 +18,23 @@ public class AnalyzerEngine {
     private final Reporter reporter;
 
     public AnalyzerEngine(String targetPath) {
+        this(targetPath, new JsonReporter());
+    }
+
+    /**
+     * Creates an analyzer with the reporter selected by the caller.
+     *
+     * <p>The original constructor continues to select JSON so existing API users
+     * keep their current output format. This overload lets the CLI choose a
+     * different {@link Reporter} without changing analysis or rule behavior.</p>
+     *
+     * @param targetPath source file or directory to analyze
+     * @param reporter destination formatter for the collected violations
+     */
+    public AnalyzerEngine(String targetPath, Reporter reporter) {
         this.targetPath = targetPath;
         this.rules = new ArrayList<>();
-        this.reporter = new JsonReporter();
+        this.reporter = reporter;
 
         loadDefaultRules();
     }

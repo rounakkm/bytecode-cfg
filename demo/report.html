@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BytecodeCFG Analysis Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; color: #222; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #bbb; padding: 0.55rem; text-align: left; vertical-align: top; }
+    th { background: #f0f0f0; }
+    tbody tr:nth-child(even) { background: #fafafa; }
+    .empty { padding: 1rem; background: #f6f6f6; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>BytecodeCFG Analysis Report</h1>
+  <p><strong>Total violations:</strong> 5<br><strong>Files analyzed:</strong> demo/Sample.java</p>
+  <table>
+    <thead><tr><th>Rule name</th><th>File</th><th>Line number</th><th>Message</th></tr></thead>
+    <tbody>
+      <tr><td>NamingRule</td><td>Sample.java</td><td>6</td><td>Field name &#39;BadlyNamedField&#39; should use camelCase (e.g. &#39;badlyNamedField&#39;)</td></tr>
+      <tr><td>NamingRule</td><td>Sample.java</td><td>9</td><td>Constant &#39;invalidConstant&#39; should use UPPER_SNAKE_CASE (e.g. &#39;INVALID_CONSTANT&#39;)</td></tr>
+      <tr><td>NamingRule</td><td>Sample.java</td><td>17</td><td>Method name &#39;BadMethodName&#39; should use camelCase (e.g. &#39;badMethodName&#39;)</td></tr>
+      <tr><td>ComplexityRule</td><td>Sample.java</td><td>29</td><td>Method &#39;complexMethod&#39; has complexity of 11, exceeds threshold of 10</td></tr>
+      <tr><td>NullCheckRule</td><td>Sample.java</td><td>24</td><td>Potential null dereference: &#39;text.length()&#39; — &#39;text&#39; was assigned null at line 23</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>
