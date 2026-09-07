@@ -1,0 +1,8 @@
+rules:
+  naming:
+    enabled: false
+  complexity:
+    enabled: true
+    threshold: 5
+  nullCheck:
+    enabled: true

@@ -1,0 +1,2 @@
+rules:
+  naming: [invalid_unclosed_yaml_sequence

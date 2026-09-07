@@ -8,38 +8,21 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Renders analyzer violations as one self-contained, dependency-free HTML page.
- *
- * <p>Rules currently communicate violations through the {@link Reporter}
- * interface as formatted strings. This reporter parses that established format
- * locally, rather than changing the rule or reporter contracts.</p>
- */
+
 public class HtmlReporter implements Reporter {
 
     private static final Pattern VIOLATION_PATTERN =
             Pattern.compile("^\\[([^\\]]+)\\]\\s+([^:]+):(\\d+)\\s+→\\s+(.*)$");
     private final String analyzedTarget;
 
-    /** Creates a reporter when the caller does not have an input-path summary. */
     public HtmlReporter() {
         this(null);
     }
-
-    /**
-     * Creates a reporter with the CLI input path for the report summary.
-     *
-     * @param analyzedTarget file or directory requested for analysis
-     */
+   
     public HtmlReporter(String analyzedTarget) {
         this.analyzedTarget = analyzedTarget;
     }
 
-    /**
-     * Prints a complete HTML document for the supplied violations.
-     *
-     * @param violations raw violations emitted by the existing rules
-     */
     @Override
     public void report(List<String> violations) {
         List<ViolationEntry> entries = parseViolations(violations);
@@ -68,7 +51,6 @@ public class HtmlReporter implements Reporter {
                     matcher.group(4).trim());
         }
 
-        // Preserve unrecognised rule output instead of silently discarding it.
         return new ViolationEntry("UnknownRule", "UnknownFile", -1, rawViolation);
     }
 
@@ -79,9 +61,6 @@ public class HtmlReporter implements Reporter {
                 files.add(entry.file);
             }
         }
-
-        // A clean analysis has no violations from which to infer a file name, so
-        // prefer the CLI-provided target whenever it is available.
         String fileSummary = analyzedTarget == null || analyzedTarget.trim().isEmpty()
                 ? (files.isEmpty() ? "no source files listed" : String.join(", ", files))
                 : analyzedTarget;
@@ -119,7 +98,6 @@ public class HtmlReporter implements Reporter {
         return html.append("</body>\n</html>").toString();
     }
 
-    /** Escapes rule-provided text so a source identifier cannot alter the document. */
     private String escapeHtml(String value) {
         return value.replace("&", "&amp;")
                 .replace("<", "&lt;")

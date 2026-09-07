@@ -1,5 +1,7 @@
 package com.bytecodecfg.analyzer;
 
+import com.bytecodecfg.config.Config;
+import com.bytecodecfg.config.RuleConfig;
 import com.bytecodecfg.reporter.JsonReporter;
 import com.bytecodecfg.reporter.Reporter;
 import com.bytecodecfg.rules.ComplexityRule;
@@ -21,29 +23,43 @@ public class AnalyzerEngine {
         this(targetPath, new JsonReporter());
     }
 
-    /**
-     * Creates an analyzer with the reporter selected by the caller.
-     *
-     * <p>The original constructor continues to select JSON so existing API users
-     * keep their current output format. This overload lets the CLI choose a
-     * different {@link Reporter} without changing analysis or rule behavior.</p>
-     *
-     * @param targetPath source file or directory to analyze
-     * @param reporter destination formatter for the collected violations
-     */
     public AnalyzerEngine(String targetPath, Reporter reporter) {
+        this(targetPath, reporter, null);
+    }
+
+    public AnalyzerEngine(String targetPath, Reporter reporter, Config config) {
         this.targetPath = targetPath;
         this.rules = new ArrayList<>();
         this.reporter = reporter;
 
-        loadDefaultRules();
+        loadRules(config);
     }
 
+    private void loadRules(Config config) {
+        if (config == null) {
+            rules.add(new NamingRule());
+            rules.add(new ComplexityRule());
+            rules.add(new NullCheckRule());
+        } else {
+            RuleConfig namingCfg = config.getRuleConfig("naming");
+            if (namingCfg.isEnabled()) {
+                rules.add(new NamingRule());
+            }
 
-    private void loadDefaultRules() {
-        rules.add(new NamingRule());
-        rules.add(new ComplexityRule());
-        rules.add(new NullCheckRule());
+            RuleConfig complexityCfg = config.getRuleConfig("complexity");
+            if (complexityCfg.isEnabled()) {
+                if (complexityCfg.getThreshold() != null) {
+                    rules.add(new ComplexityRule(complexityCfg.getThreshold()));
+                } else {
+                    rules.add(new ComplexityRule());
+                }
+            }
+
+            RuleConfig nullCheckCfg = config.getRuleConfig("nullCheck");
+            if (nullCheckCfg.isEnabled()) {
+                rules.add(new NullCheckRule());
+            }
+        }
         System.out.println("Loaded " + rules.size() + " rules.");
     }
 
