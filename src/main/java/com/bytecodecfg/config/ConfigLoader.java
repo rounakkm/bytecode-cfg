@@ -11,6 +11,7 @@ import java.io.IOException;
 public class ConfigLoader {
 
     private static final ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
+
     public static Config loadConfig(String configPath) throws IOException {
         if (configPath == null || configPath.trim().isEmpty()) {
             throw new IllegalArgumentException("Config path cannot be null or empty.");

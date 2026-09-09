@@ -5,13 +5,9 @@ import java.util.List;
 
 public class BasicBlock {
 
-    
     public enum BlockType {
-        
         ENTRY,
-        
         NORMAL,
-        
         EXIT
     }
 

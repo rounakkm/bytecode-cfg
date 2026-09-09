@@ -6,11 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RuleConfig {
 
-
     private boolean enabled = true;
-
     private Integer threshold;
-
 
     public boolean isEnabled() {
         return enabled;

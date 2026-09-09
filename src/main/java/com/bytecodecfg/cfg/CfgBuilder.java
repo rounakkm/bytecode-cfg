@@ -22,7 +22,6 @@ import java.util.Map;
 
 public class CfgBuilder {
 
-    
     public CfgResult build(MethodDeclaration method, String methodId) {
         BasicBlock.resetIdCounter();
 

@@ -84,7 +84,6 @@ public class NullCheckRule implements Rule {
                         String varName = ((NameExpr) n.getTarget()).getNameAsString();
 
                         if (n.getValue() instanceof NullLiteralExpr) {
-                            // Variable is being set to null
                             int line = n.getBegin()
                                     .map(p -> p.line)
                                     .orElse(-1);

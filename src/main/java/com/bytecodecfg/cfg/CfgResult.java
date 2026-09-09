@@ -9,13 +9,10 @@ public class CfgResult {
 
     public final String methodId;
 
-
     public final List<BasicBlock> blocks;
-
 
     public final Map<Integer, Map<Integer, String>> edgeLabels;
 
-    
     public CfgResult(String methodId, List<BasicBlock> blocks,
                      Map<Integer, Map<Integer, String>> edgeLabels) {
         this.methodId = methodId;

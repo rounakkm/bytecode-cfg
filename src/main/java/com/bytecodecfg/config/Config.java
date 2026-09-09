@@ -9,9 +9,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Config {
 
-
     private Map<String, RuleConfig> rules = new HashMap<>();
-
 
     public Map<String, RuleConfig> getRules() {
         return rules;
@@ -20,7 +18,6 @@ public class Config {
     public void setRules(Map<String, RuleConfig> rules) {
         this.rules = rules != null ? rules : new HashMap<>();
     }
-
 
     public RuleConfig getRuleConfig(String ruleName) {
         if (rules == null || ruleName == null) {

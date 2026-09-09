@@ -24,7 +24,6 @@ public class CfgEngine {
         this.targetPath = targetPath;
     }
 
-
     public void run(File outputDir) {
      
         if (!outputDir.exists() && !outputDir.mkdirs()) {

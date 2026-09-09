@@ -82,7 +82,7 @@ public class ComplexityRule implements Rule {
         }
 
         private int calculateComplexity(MethodDeclaration method) {
-            int[] complexity = {1}; // Base complexity for method entry
+            int[] complexity = {1};
 
             method.accept(new VoidVisitorAdapter<Void>() {
                 @Override

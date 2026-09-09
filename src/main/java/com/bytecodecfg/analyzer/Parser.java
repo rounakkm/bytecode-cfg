@@ -44,8 +44,6 @@ public class Parser {
         return units;
     }
 
-    
-//not detecting whether the target is a file or directory.
     public List<CompilationUnit> parse() {
         File target = new File(targetPath);
         List<CompilationUnit> units = new ArrayList<>();

@@ -3,11 +3,12 @@
 ## Execution
 
 The tool is executed using:
+ 
+```bash
+java -jar target/bytecode-cfg-runner.jar --input /path/to/java/project [--format json|html] [--config path/to/config.yml] [--graph path/to/graphs]
+```
 
-`java -jar target/bytecode-cfg-runner.jar /path/to/java/project`
-
-
-When executed, the system performs static analysis on the provided Java project and outputs a structured JSON report.
+When executed, the system performs static analysis on the provided Java project and outputs a structured report (JSON or HTML), and optionally exports Control Flow Graph DOT files.
 
 ---
 
@@ -99,32 +100,34 @@ The final output is a JSON report printed to the terminal:
 
 ```mermaid
 flowchart TD
-    A["Input Path"] --> B["File Scanner"]
-    B --> C["AST Parser"]
+    A["Input Path (--input)"] --> B["File Scanner"]
+    B --> C["AST Parser (JavaParser)"]
     C --> D["Rule Engine"]
+    CFG_CFG["YAML Config (--config)"] -.-> D
     D --> D1["NamingRule"]
     D --> D2["ComplexityRule"]
     D --> D3["NullCheckRule"]
     D1 --> E["Violation Collector"]
     D2 --> E
     D3 --> E
-    E --> F["JSON Reporter"]
+    E --> F["JSON / HTML Reporter (--format)"]
+    C --> G["CFG Engine (--graph)"]
+    G --> H["Graphviz DOT Exporter (.dot)"]
 ```
 
-## Scope (v1.0)
+## Current Capabilities
 
-### The current version includes:
+- Recursive scanning of Java source files (`--input`)
+- JavaParser AST-based parsing and analysis
+- Rule-based static analysis (`NamingRule`, `ComplexityRule`, `NullCheckRule`)
+- Configurable rules via YAML configuration file (`--config`)
+- Structured JSON and styled HTML report generation (`--format json|html`, `--output`)
+- Intra-procedural Control Flow Graph (CFG) generation in Graphviz DOT format (`--graph`)
 
-- Recursive scanning of Java source files
-- AST-based parsing
-- Rule-based static analysis
-- JSON output in terminal
-
-## Limitations 
-- No HTML report generation
-- No configuration file support
-- No graphical user interface
-- No IDE plugin integration
-- No Control Flow Graph (CFG) visualization
+## Current Limitations
+- Operates on Java source files (`.java`), not compiled bytecode (`.class`/`.jar`)
+- CFGs do not currently model exception control flow (`try`/`catch`/`finally`/`throw`), `switch` branching, or lambda expressions
+- Direct visual rendering (e.g. PNG/SVG) requires external Graphviz `dot` executable
+- No graphical user interface (GUI) or IDE plugin integration
 
 ---
