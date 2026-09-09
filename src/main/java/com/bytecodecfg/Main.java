@@ -1,6 +1,7 @@
 package com.bytecodecfg;
 
 import com.bytecodecfg.analyzer.AnalyzerEngine;
+import com.bytecodecfg.cfg.CfgEngine;
 import com.bytecodecfg.config.Config;
 import com.bytecodecfg.config.ConfigLoader;
 import com.bytecodecfg.reporter.HtmlReporter;
@@ -24,7 +25,7 @@ public class Main {
         String outputPath = null;
         String format = "json";
         String configPath = null;
-
+        String graphOutputDir = null;  
         
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -60,6 +61,13 @@ public class Main {
                     System.exit(EXIT_ERROR);
                 }
                 configPath = args[++i];
+            } else if ("--graph".equals(arg)) {
+                if (i + 1 >= args.length) {
+                    System.err.println("Error: Missing value for option " + arg);
+                    printUsage();
+                    System.exit(EXIT_ERROR);
+                }
+                graphOutputDir = args[++i];
             } else if (arg.startsWith("-")) {
                 System.err.println("Error: Unknown option '" + arg + "'");
                 printUsage();
@@ -137,6 +145,17 @@ public class Main {
             }
         }
 
+
+        if (graphOutputDir != null) {
+            File graphDir = new File(graphOutputDir);
+            try {
+                new CfgEngine(inputPath).run(graphDir);
+            } catch (Exception e) {
+                System.err.println("Error during CFG generation: " + e.getMessage());
+                System.exit(EXIT_ERROR);
+            }
+        }
+
         System.exit(EXIT_SUCCESS);
     }
 
@@ -151,12 +170,13 @@ public class Main {
 
   
     private static void printUsage() {
-        System.err.println("Usage: java -jar bytecode-cfg-runner.jar --input <path> [--output <path>] [--format json|html] [--config <path>]");
+        System.err.println("Usage: java -jar bytecode-cfg-runner.jar --input <path> [--output <path>] [--format json|html] [--config <path>] [--graph <dir>]");
         System.err.println("Options:");
         System.err.println("  -i, --input <path>   Path to the Java source file or directory to analyze (required)");
         System.err.println("  -o, --output <path>  Path to save the generated report (optional, default: stdout)");
         System.err.println("      --format <type>  Report format: json (default) or html");
         System.err.println("  -c, --config <path>  Path to YAML configuration file (optional)");
+        System.err.println("      --graph <dir>    Output directory for Graphviz DOT files (one per method; additive with report)");
         System.err.println("  -h, --help           Show this help message and exit");
     }
 }

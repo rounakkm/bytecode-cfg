@@ -1,8 +1,27 @@
+# bytecodecfg.yml — BytecodeCFG rule configuration
+#
+# This file is passed to the tool via: --config demo/bytecodecfg.yml
+#
+# All rule sections are optional.
+# Omitting a rule entirely is equivalent to: enabled: true (rule runs at its default settings).
+#
+# Schema:
+#   rules:
+#     <ruleName>:          # one of: naming | complexity | nullCheck
+#       enabled: <bool>   # true (default) or false — whether the rule runs
+#       threshold: <int>  # complexity only — flags methods with complexity > threshold
+#                         # default when omitted: 10
+#
+# This demo config:
+#   - Disables NamingRule  (zero naming violations expected)
+#   - Lowers ComplexityRule threshold to 5  (complexMethod has complexity 11, so it still fires)
+#   - Leaves NullCheckRule at default settings
+
 rules:
   naming:
-    enabled: false
+    enabled: false        # NamingRule disabled — no naming violations will be reported
   complexity:
     enabled: true
-    threshold: 5
+    threshold: 5          # Override default (10); methods with complexity > 5 are flagged
   nullCheck:
-    enabled: true
+    enabled: true         # NullCheckRule runs at its default settings (no threshold to override)
