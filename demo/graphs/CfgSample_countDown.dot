@@ -1,0 +1,21 @@
+digraph CfgSample_countDown {
+    graph [rankdir=TB fontname="Helvetica"];
+    node  [fontname="Helvetica" fontsize=10];
+    edge  [fontname="Helvetica" fontsize=9];
+
+    B0 [shape=doublecircle label="ENTRY" style=filled fillcolor="#aee8c0"];
+    B1 [shape=doublecircle label="EXIT" style=filled fillcolor="#f4a8a8"];
+    B2 [shape=box label="int result = 0;"];
+    B3 [shape=box label="result += n;\\nn--;"];
+    B4 [shape=box label="return result"];
+    B5 [shape=box label="do-while (n > 0)"];
+    B6 [shape=box label="(empty)"];
+
+    B0 -> B2;
+    B2 -> B3;
+    B3 -> B5;
+    B4 -> B1;
+    B5 -> B3 [label="true"];
+    B5 -> B4 [label="false"];
+    B6 -> B1;
+}
