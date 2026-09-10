@@ -65,23 +65,32 @@ java -jar target/bytecode-cfg-runner.jar [OPTIONS]
 | `-i`, `--input` | `<path>` | **Yes** | Path to a Java source file (`.java`) or root directory of a Java project | `--input demo/Sample.java` |
 | `-o`, `--output` | `<path>` | No | File destination to save the analysis report (default: `stdout`) | `--output target/report.json` |
 | `--format` | `<type>` | No | Report format: `json` (default) or `html` | `--format html` |
-| `-c`, `--config` | `<path>` | No | Path to a YAML configuration file to override rule settings | `--config demo/bytecodecfg.yml` |
+| `-c`, `--config` | `<path>` | No | Path to YAML configuration file to override rule settings | `--config demo/bytecodecfg.yml` |
 | `--graph` | `<dir>` | No | Output directory for Graphviz DOT files (emits one `<Class>_<method>.dot` per method) | `--graph demo/graphs` |
+| `--render` | `<format>` | No | Render DOT files to images (`png` or `svg`; requires `--graph` and system `dot`) | `--graph demo/graphs --render png` |
 | `-h`, `--help` | — | No | Prints usage information and available command-line options | `--help` |
 
 ### Graph Rendering & Graphviz `dot` Requirement
 
-The `--graph` option produces clean Graphviz DOT files (`.dot`). To render DOT files into visual image formats (e.g. PNG, SVG), the external Graphviz `dot` executable must be installed on your system:
+The `--graph` option produces clean Graphviz DOT files (`.dot`). When paired with `--render png` or `--render svg`, Bytecode CFG invokes the system `dot` binary to automatically generate `.png` or `.svg` files in the same output directory:
 
 ```bash
-# Convert a generated CFG to PNG
-dot -Tpng demo/graphs/CfgSample_computeGrade.dot -o demo/graphs/CfgSample_computeGrade.png
+# Generate DOT files and render directly to PNG
+java -jar target/bytecode-cfg-runner.jar --input demo/CfgSample.java --graph demo/graphs --render png
 
-# Convert a generated CFG to SVG
-dot -Tsvg demo/graphs/CfgSample_collatz.dot -o demo/graphs/CfgSample_collatz.svg
+# Generate DOT files and render directly to SVG
+java -jar target/bytecode-cfg-runner.jar --input demo/CfgSample.java --graph demo/graphs --render svg
 ```
 
-*(Note: Direct automatic rendering via a `--render` flag requires the external Graphviz `dot` binary in the system `PATH` and is not bundled directly inside the JAR to avoid native binary dependencies).*
+*(Note: Automatic rendering via `--render` requires the external Graphviz `dot` binary on system `PATH`. If not found, Bytecode CFG reports a clear error message).* Alternatively, DOT files can be converted manually via the command line:
+
+```bash
+# Convert a generated CFG to PNG manually
+dot -Tpng demo/graphs/CfgSample_computeGrade.dot -o demo/graphs/CfgSample_computeGrade.png
+
+# Convert a generated CFG to SVG manually
+dot -Tsvg demo/graphs/CfgSample_collatz.dot -o demo/graphs/CfgSample_collatz.svg
+```
 
 ---
 

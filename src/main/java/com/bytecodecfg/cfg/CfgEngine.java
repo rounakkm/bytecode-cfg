@@ -19,16 +19,30 @@ import java.util.Map;
 public class CfgEngine {
 
     private final String targetPath;
+    private final GraphvizRenderer renderer;
 
     public CfgEngine(String targetPath) {
+        this(targetPath, new GraphvizRenderer());
+    }
+
+    public CfgEngine(String targetPath, GraphvizRenderer renderer) {
         this.targetPath = targetPath;
+        this.renderer = renderer != null ? renderer : new GraphvizRenderer();
     }
 
     public void run(File outputDir) {
+        run(outputDir, null);
+    }
+
+    public void run(File outputDir, String renderFormat) {
      
         if (!outputDir.exists() && !outputDir.mkdirs()) {
             System.err.println("CFG Warning: could not create output directory: " + outputDir);
             return;
+        }
+
+        if (renderFormat != null && !renderer.isAvailable()) {
+            throw new IllegalStateException("Graphviz 'dot' not found on PATH — install it to use --render");
         }
 
         Parser parser = new Parser(targetPath);
@@ -42,8 +56,10 @@ public class CfgEngine {
         CfgBuilder builder  = new CfgBuilder();
         DotExporter exporter = new DotExporter();
 
-        int methodCount = 0;
-        int fileCount   = 0;
+        int methodCount   = 0;
+        int fileCount     = 0;
+        int renderedCount = 0;
+        int renderErrors  = 0;
 
         for (CompilationUnit cu : compilationUnits) {
             
@@ -64,6 +80,17 @@ public class CfgEngine {
                     ps.print(dot);
                     System.out.println("CFG written: " + outFile.getPath());
                     methodCount++;
+
+                    if (renderFormat != null) {
+                        try {
+                            File renderedFile = renderer.render(outFile, renderFormat);
+                            System.out.println("CFG rendered: " + renderedFile.getPath());
+                            renderedCount++;
+                        } catch (Exception e) {
+                            renderErrors++;
+                            System.err.println("CFG Render Error: Failed to render " + outFile.getName() + " to " + renderFormat + ": " + e.getMessage());
+                        }
+                    }
                 } catch (IOException e) {
                     System.err.println("CFG Error: could not write " + outFile + ": " + e.getMessage());
                 }
@@ -71,9 +98,17 @@ public class CfgEngine {
             fileCount++;
         }
 
-        System.out.println("CFG generation complete: "
+        String summary = "CFG generation complete: "
                 + methodCount + " method graph(s) written from "
-                + fileCount + " file(s) to " + outputDir.getPath());
+                + fileCount + " file(s) to " + outputDir.getPath();
+        if (renderFormat != null) {
+            summary += " (" + renderedCount + " rendered as " + renderFormat + ")";
+        }
+        System.out.println(summary);
+
+        if (renderErrors > 0) {
+            throw new RuntimeException(renderErrors + " graph(s) failed to render.");
+        }
     }
 
     

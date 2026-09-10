@@ -7,13 +7,12 @@ target/
 *.war
 *.ear
 *.rar
-
+*.nar
 
 .idea/
 *.iml
 *.ipr
 *.iws
-
 
 .apt_generated
 .classpath
@@ -22,7 +21,6 @@ target/
 .settings/
 .springBeans
 .sts4-cache
-
 
 /nbproject/private/
 /nbbuild/
@@ -33,31 +31,29 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-
 .vscode/
 *.swp
 *.swo
 *~
 .kotlin
 
-
 .DS_Store
 Thumbs.db
 
-
 *.log
 logs/
-
+hs_err_pid*
+replay_pid*
+*.dump
+*.dumpstream
 
 .env
 *.env
 *.properties.local
 *.local
 
-
 lib/
 tmp/
 .tmp/
-
 
 dependency-reduced-pom.xml
